@@ -146,6 +146,7 @@ function startTrainerBattle(trainer, pokemon, type, level){
 function wildEncounter(pokemon, type, lvl){
   clearMap();
   clear();
+  $("#run").show();
   $("#trainerImage").hide(); //because my code hates me
   enemyPokemon = new Pokemon(pokemon, type, lvl);
   document.getElementById("enemyp").style.width = "100px";
@@ -300,7 +301,7 @@ function win(){
   y = 15;
   allowMap();
   var coinsEarned = 0;
-  $("#pokemonInfo, #potion").hide();
+  $("#pokemonInfo").hide();
   if (currentTrainer != null){
     currentTrainer.defeated = true;
     enemiesDefeated.push(currentTrainer);
@@ -696,6 +697,23 @@ function allowMap(){
 function startGame(){
   $("#opener").hide();
   $("#selector").show();
+}
+
+function run(){
+  var chance = Math.random()*10;
+  if (chance >= 5){
+    //escape successfully
+    clear();
+    y = 15;
+    allowMap();
+    text("You ran away.", x, y);
+    y += 15;
+    enemyPokemon = null;
+    $("#pokemonInfo").hide();
+  }
+  else {
+
+  }
 }
 
 /*
