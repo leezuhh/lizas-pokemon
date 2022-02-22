@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Liza's Homebrewed Pokemon</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="class.js"></script>
+  </head>
+  <body>
+    <script src="script.js"></script>
+    <script src="map.js"></script>
+
+    <main id="main">
+
+    <div id="moveSet"></div>
+
+    <div id="opener">
+      <h2>Welcome to Liza's Pokemon!</h2>
+      <p>In this game, you'll be able to catch and collect all kinds of Pokemon. Use the arrow keys to move up, down, left, and right. The orange tiles are path tiles, where wild Pokemon won't attack, but they will on the green tiles! Walking on a pink tile will open the Shop, where you can save, buy Pokeballs to catch more amazing Pokemon, buy potions to heal your Pokemon in-battle, and heal your Pokemon for future battles.</p>
+      <button class="btn" onclick="startGame()">Start the game!</button>
+    </div>
+
+    <div id="menu">
+        <p><input type="text" id="user" placeholder="Enter a username..."></p>
+        <button onclick="loadGame()" class="btn">Load</button>
+        <button onclick="newGame()" class="btn">New</button>
+    </div>
+
+    <!-- "select a pokemon" div - main box -->
+    <div id="selector">
+      <p>Select a starter Pokemon!</p>
+      <button onclick="selectStarter(0)" class="btn">Pikachu</button>
+      <button onclick="selectStarter(1)" class="btn">Bulbasaur</button>
+      <button onclick="selectStarter(2)" class="btn">Charmander</button>
+      <button onclick="selectStarter(3)" class="btn">Squirtle</button>
+    </div>
+
+    <!-- shows starter and enemy images, hp - main box -->
+    <div id="pokemonInfo">
+      <img id="starterImage" width = "100px">
+      <img id="enemyImage" width = "100px">
+      <img id="trainerImage" width="50px">
+      <div id="starterHP" class="hp">
+        <p id="starterp"></p>
+      </div>
+      <div id="enemyHP" class="hp">
+        <p id="enemyp"></p>
+      </div>
+      <!-- shows moves that can be used by the player - main box-->
+      <div id="moves">
+        <button onclick="useMove(0)" id="move1" class="btn">Move1</button>
+        <button onclick="useMove(1)" id="move2" class="btn">Move2</button>
+      </div>
+
+      <button class="btn" id="capture" onclick="capture()">Throw a Pokeball!</button>
+      <button class="btn" id="potion" onclick="usePotion()">Use a potion!</button>
+    </div>
+
+    <!-- reset button - main box -->
+    <button onclick="reset()" id="reset" class="btn">Try again?</button>
+
+    </main>
+
+    <!-- shop - sidebar -->
+    <aside>
+      <div id="tester">
+        <button onclick="levelUp()">tester</button>
+      </div>
+      <button id="blergh" onclick="blergh()">blergh</button>
+      <div id="shop">
+        <h1>Welcome to the Pokemart!</h1>
+        <p>You have <span id="goldCount">0</span> Pokecoins!</p>
+        <button onclick="heal()" class="btn">Heal Pokemon (free!)</button>
+        <button class="btn" onclick="buy(0)">Buy Pokeball (10 Pokecoins)!</button>
+        <button class="btn" onclick="buy(1)">Buy Potion (5 Pokecoins)!</button>
+        <button class="btn" onclick="saveGame()">Save</button>
+        <button onclick="walk()" class="btn">Leave the Pokemart</button>
+      </div>
+
+      <div id="inventory">
+        <p>Pokeballs: <span id="balls">0</span></p>
+        <p>Potions: <span id="pot">0</span></p>
+      </div>
+    </aside>
+
+    <footer>
+      <!-- <button id="switcher" onclick="startSwitch()">Switch team members</button> -->
+      <div id="changeNN">
+        <input type="text" required="required" placeholder="Enter a name..." id="changer">
+        <p id="inder"></p>
+        <button onclick="changeNN()" class="btn">Change nickname!</button>
+      </div>
+    </footer>
+    
+  </body>
+</html>
