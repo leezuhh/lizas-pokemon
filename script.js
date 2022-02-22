@@ -136,7 +136,7 @@ function startTrainerBattle(trainer, pokemon, type, level){
   attackText();
   
   //shop goes poof
-  $("#shop, #capture").hide();
+  $("#shop, #capture, #run").hide();
 
   //what shows up: moves, enemy pokemon image, hp bars
   $("#pokemonInfo").show();
@@ -305,7 +305,7 @@ function win(){
   if (currentTrainer != null){
     currentTrainer.defeated = true;
     enemiesDefeated.push(currentTrainer);
-    $("#capture").show();
+    $("#capture, #run").show();
     $("#trainerImage").hide();
     text("You won the battle against Trainer " + currentTrainer.name + "!", x, y);
     y+=15;
@@ -712,7 +712,8 @@ function run(){
     $("#pokemonInfo").hide();
   }
   else {
-
+    text("You tried to run, but couldn't.", x, y);
+    y += 15;
   }
 }
 
