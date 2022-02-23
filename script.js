@@ -24,7 +24,7 @@ var user;
 var ind1;
 
 //map variables
-var player = new Character(0, "Me", 12.5, 12.5, "char1.png");
+var player = new Trainer("Player", [], 0, "char1.png", 12.5, 12.5);
 var playerImg;
 var tiles = [];
 
@@ -69,7 +69,7 @@ function selectStarter(ind) {
   document.getElementById("starterImage").src = "images/" + starter.name + ".png";
   document.getElementById("move1").innerHTML = starter.knownMoves[0];
   document.getElementById("move2").innerHTML = starter.knownMoves[1];
-  startTrainerBattle("Isabel", "Vulpix", "Fire", 1); //starting trainer battle always the same
+  startTrainerBattle("Isabel", ["Vulpix"], 1); //starting trainer battle always the same
 }
 
 function walk() {
@@ -103,7 +103,7 @@ function walk() {
         }
         else {
           var trainer = trainerList[progressionLevel];
-          startTrainerBattle(trainer[0], trainer[1], trainer[2], trainer[3]);
+          startTrainerBattle(trainer[0], trainer[1], trainer[2]);
         }
         break;
     }
@@ -121,11 +121,11 @@ function walk() {
 
 //begin a trainer battle
 //we take: trainer name, pokemon name, pokemon type, pokemon level
-function startTrainerBattle(trainer, pokemon, type, level){
+function startTrainerBattle(trainer, pokemon, level){
   clearMap();
   clear();
   y = 15;
-  currentTrainer = new Trainer(trainer, pokemon, type, level);
+  currentTrainer = new Trainer(trainer, pokemon, level);
   $("#trainerImage").show();
   $("#trainerImage").attr("src", "images/"+trainer+".png");
   enemyPokemon = currentTrainer.pokemon;
