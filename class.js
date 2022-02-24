@@ -15,18 +15,16 @@ var types = ["Fire", "Water", "Grass", "Electric", "Flying", "Poison", "Fairy", 
 //there's probably a more efficient way to do this but that's for Future Liza to figure out
 
 //ok so for evolution: I'm going to have a list of all of the Pokemon. When trying to evolve you first check to see if it's a Pokemon that can evolve at all, and if so, then you find the indexOf the Pokemon name in the Pokemon name list, and then go one index further.
-var pkmList = [["Pikachu", "Electric"], ["Raichu", "Electric"], ["Charmander", "Fire"], ["Charmeleon", "Fire"], ["Charizard", "Fire"], ["Squirtle", "Water"], ["Wartortle", "Water"], ["Blastoise", "Water"], ["Bulbasaur", "Grass"], ["Ivysaur", "Grass"], ["Venusaur", "Grass"], ["Pidgey", "Flying"], ["Pidgeotto", "Flying"], ["Pidgeot", "Flying"], ["Caterpie", "Bug"], ["Metapod", "Bug"], ["Butterfree", "Bug"], ["Ekans", "Poison"], ["Arbok", "Poison"], ["Jigglypuff", "Fairy"], ["Wigglytuff", "Fairy"], ["Zubat", "Poison"], ["Golbat", "Poison"], ["Crobat", "Poison"], ["Oddish", "Grass"], ["Gloom", "Poison"], ["Vileplume", "Poison"], ["Doduo", "Normal"], ["Dodrio", "Normal"], ["Vulpix", "Fire"], ["Ninetales", "Fire"], ["Gastly", "Ghost"], ["Haunter", "Ghost"], ["Gengar", "Ghost"], ["Weedle", "Bug"], ["Kakuna", "Bug"], ["Beedrill", "Bug"], ["Clefairy", "Fairy"], ["Clefable", "Fairy"], ["Meowth", "Normal"], ["Persian", "Normal"], ["Growlithe", "Fire"], ["Arcanine", "Fire"], ["Magnemite", "Electric"], ["Magneton", "Electric"], ["Magnezone", "Electric"], ["Lapras", "Water"], ["Rattata", "Normal"], ["Raticate", "Normal"], ["Psyduck", "Water"], ["Golduck", "Water"], ["Mewtwo", "Psychic"]];
+var pkmList = [["Pikachu", "Electric"], ["Raichu", "Electric"], ["Charmander", "Fire"], ["Charmeleon", "Fire"], ["Charizard", "Fire"], ["Squirtle", "Water"], ["Wartortle", "Water"], ["Blastoise", "Water"], ["Bulbasaur", "Grass"], ["Ivysaur", "Grass"], ["Venusaur", "Grass"], ["Pidgey", "Flying"], ["Pidgeotto", "Flying"], ["Pidgeot", "Flying"], ["Caterpie", "Bug"], ["Metapod", "Bug"], ["Butterfree", "Bug"], ["Ekans", "Poison"], ["Arbok", "Poison"], ["Jigglypuff", "Fairy"], ["Wigglytuff", "Fairy"], ["Zubat", "Poison"], ["Golbat", "Poison"], ["Crobat", "Poison"], ["Oddish", "Grass"], ["Gloom", "Poison"], ["Vileplume", "Poison"], ["Doduo", "Normal"], ["Dodrio", "Normal"], ["Vulpix", "Fire"], ["Ninetales", "Fire"], ["Gastly", "Ghost"], ["Haunter", "Ghost"], ["Gengar", "Ghost"], ["Weedle", "Bug"], ["Kakuna", "Bug"], ["Beedrill", "Bug"], ["Clefairy", "Fairy"], ["Clefable", "Fairy"], ["Meowth", "Normal"], ["Persian", "Normal"], ["Growlithe", "Fire"], ["Arcanine", "Fire"], ["Magnemite", "Electric"], ["Magneton", "Electric"], ["Magnezone", "Electric"], ["Lapras", "Water"], ["Rattata", "Normal"], ["Raticate", "Normal"], ["Psyduck", "Water"], ["Golduck", "Water"], ["Mewtwo", "Psychic"], ["Bellsprout", "Grass"], ["Weepinbell", "Grass"], ["Victreebel", "Grass"], ["Tentacool", "Water"], ["Tentacruel", "Water"], ["Abra", "Psychic"], ["Kadabra", "Psychic"], ["Alakazam", "Psychic"], ["Ponyta", "Fire"], ["Rapidash", "Fire"], ["Drowzee", "Psychic"], ["Hypno", "Psychic"]];
 
-var wildPokemon = [["Pidgey", "Flying"], ["Caterpie", "Bug"], ["Ekans", "Poison"], ["Jigglypuff", "Fairy"], ["Zubat", "Flying"], ["Oddish", "Grass"], ["Doduo", "Normal"], ["Vulpix", "Fire"], ["Gastly", "Ghost"], ["Rattata", "Normal"], ["Weedle", "Bug"], ["Clefairy", "Fairy"], ["Meowth", "Normal"], ["Growlithe", "Fire"]]; //list of wild Pokemon to grab from for a random encounter
+var wildPokemon = [["Pidgey", "Flying"], ["Caterpie", "Bug"], ["Ekans", "Poison"], ["Jigglypuff", "Fairy"], ["Zubat", "Flying"], ["Oddish", "Grass"], ["Doduo", "Normal"], ["Vulpix", "Fire"], ["Gastly", "Ghost"], ["Rattata", "Normal"], ["Weedle", "Bug"], ["Clefairy", "Fairy"], ["Meowth", "Normal"], ["Growlithe", "Fire"], ["Ponyta", "Fire"]]; //list of wild Pokemon to grab from for a random encounter
 
-var trainerList = [["Kyle", ["Rattata"], 5], ["Emma", ["Oddish"], 10], ["Kovas", ["Golduck"], 20], ["Cora", ["Growlithe"], 25], ["Basilio", ["Magnemite"], 30], ["Isabel", ["Ninetales"], 40], ["Amy", ["Haunter"], 45], ["Zoya", ["Lapras"], 50], ["Albinson", ["Mewtwo"], 100]]; 
+var trainerList = [["Kyle", ["Rattata", "Meowth"], 5], ["Emma", ["Oddish", "Bellsprout"], 10], ["Kovas", ["Tentacool", "Golduck"], 20], ["Cora", ["Arcanine"], 25], ["Basilio", ["Magnemite"], 30], ["Isabel", ["Rapidash", "Ninetales"], 40], ["Amy", ["Haunter", "Alakazam"], 45], ["Zoya", ["Lapras"], 50], ["Albinson", ["Mewtwo"], 100]]; 
 //possible "trainers" (lol) to fight in a battle - progression
 
 function getPokemonId(name){ //get the id of the pokemon from pkmList
-  console.log("hello? " + name);
   for (var i=0; i<pkmList.length; i++){
     if (pkmList[i][0] == name){
-      console.log(pkmList[i]);
       return i;
     }
   }
@@ -136,7 +134,6 @@ class Pokemon {
       $("#moveSet").show();
     }
 
-    console.log(this.knownMoves);
   }
 
   removeMove(id){
