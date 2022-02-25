@@ -745,11 +745,11 @@ function run(){
 /*
 
 List of things to add:
-- Encounter trainers/progression (later)
 - Find items when walking around randomly (later)
 - Type effectiveness
 - Wild Pokemon evolve
 - Wild Pokemon are within a range of levels and not just Your Level
+- Show numerical health with health bar
 
 Izzy Glitches:
 - When leveling up, new attack buttons keep getting added for all Pokemon
