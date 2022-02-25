@@ -24,7 +24,7 @@ var user;
 var ind1;
 
 //map variables
-var player = new Character(0, "Me", 12.5, 12.5, "char1.png");
+var player = new Trainer("Player", [], 0, "char1.png", 12.5, 12.5);
 var playerImg;
 var tiles = [];
 
@@ -69,7 +69,7 @@ function selectStarter(ind) {
   document.getElementById("starterImage").src = "images/" + starter.name + ".png";
   document.getElementById("move1").innerHTML = starter.knownMoves[0];
   document.getElementById("move2").innerHTML = starter.knownMoves[1];
-  startTrainerBattle("Isabel", "Vulpix", "Fire", 1); //starting trainer battle always the same
+  startTrainerBattle("Isabel", ["Vulpix"], 1); //starting trainer battle always the same
 }
 
 function walk() {
@@ -91,7 +91,6 @@ function walk() {
       case 2:
         var poke = Math.floor(Math.random()*wildPokemon.length);
         wildEncounter(wildPokemon[poke][0], wildPokemon[poke][1], starter.level);
-        console.log(wildPokemon[poke][0], wildPokemon[poke][0]);
         break;
       case 3:
       //   //progression - two regular trainers, then a more difficult trainer
@@ -103,7 +102,7 @@ function walk() {
         }
         else {
           var trainer = trainerList[progressionLevel];
-          startTrainerBattle(trainer[0], trainer[1], trainer[2], trainer[3]);
+          startTrainerBattle(trainer[0], trainer[1], trainer[2]);
         }
         break;
     }
@@ -121,17 +120,18 @@ function walk() {
 
 //begin a trainer battle
 //we take: trainer name, pokemon name, pokemon type, pokemon level
-function startTrainerBattle(trainer, pokemon, type, level){
+function startTrainerBattle(trainer, pokemon, level){
+  //pokemon is an ARRAY now
   clearMap();
   clear();
   y = 15;
-  currentTrainer = new Trainer(trainer, pokemon, type, level);
+  currentTrainer = new Trainer(trainer, pokemon, level);
   $("#trainerImage").show();
   $("#trainerImage").attr("src", "images/"+trainer+".png");
-  enemyPokemon = currentTrainer.pokemon;
+  enemyPokemon = currentTrainer.pokemon[0];
   text("Trainer "+trainer+" challenged you to a battle!", x, y);
   y += 15;
-  text("Trainer "+trainer+" sent out " +pokemon+"!", x, y);
+  text("Trainer "+trainer+" sent out " +pokemon[0]+"!", x, y);
   y += 15;
   attackText();
   
@@ -140,7 +140,7 @@ function startTrainerBattle(trainer, pokemon, type, level){
 
   //what shows up: moves, enemy pokemon image, hp bars
   $("#pokemonInfo").show();
-  document.getElementById("enemyImage").src = "images/" + pokemon + ".png";
+  document.getElementById("enemyImage").src = "images/" + pokemon[0] + ".png";
 }
 
 function wildEncounter(pokemon, type, lvl){
@@ -248,7 +248,33 @@ function dealDamage(damage, receiver){
     document.getElementById("enemyp").style.width = enemyPokemon.hp*multiplier + "px";
     if (enemyPokemon.hp <= 0){
       document.getElementById("enemyp").style.width = "0px";
-      win();
+      //check if they have any more Pokemon
+      var allDefeated = true;
+      if (currentTrainer != null){
+        for (var i=0; i<currentTrainer.pokemon.length; i++){
+          var faintedPkm = currentTrainer.pokemon.shift();
+          currentTrainer.pokemon.push(faintedPkm);
+          if (currentTrainer.pokemon[0].hp > 0){
+            allDefeated = false;
+            enemyPokemon = currentTrainer.pokemon[i];
+            //change hp bar and image
+            multiplier = 100/enemyPokemon.maxHP;
+            document.getElementById("enemyp").style.width = enemyPokemon.hp*multiplier + "px";
+            $("#enemyImage").attr("src", "images/" + enemyPokemon.name + ".png");
+  
+            clear();
+            y = 15;
+            text("Trainer " + currentTrainer.name + "'s Pokemon fainted!", x, y);
+            y += 15;
+            text("They sent out " + enemyPokemon.name + "!", x, y);
+            y += 15;
+            break;
+          }
+        }
+      }
+      if (allDefeated){
+        win();
+      }
     }
   }
 
@@ -325,7 +351,6 @@ function win(){
     y+=15;
   }
   starter.exp += 10;
-  console.log(starter.exp);
   if (starter.exp >= 50){
     starter.levelup();
   }
@@ -436,7 +461,6 @@ function loadGame(){
       var curPoke = objectToPokemon(JSON.parse(plpkm[i]));
       addToTeam(curPoke);
     }
-    console.log(playerPokemon);
 
     ende = localStorage.getItem(user+"ed").split("!!");
 
@@ -613,8 +637,9 @@ function switchPokemon(ind){
     text("Switch successful!", x, y)
     y += 15;
 
-    $("#moves").empty();
+    console.log(starter.knownMoves);
     for (var i=0; i<starter.knownMoves; i++){
+      $("#move"+i).text(starter.knownMoves[i]);
       var btba = "<button id='move"+i+"' onclick='useMove("+i+")' class='btn'>"+starter.knownMoves[i]+"</button>";
       $("#moves").append(btba);
     }

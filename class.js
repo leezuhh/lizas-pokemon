@@ -15,18 +15,33 @@ var types = ["Fire", "Water", "Grass", "Electric", "Flying", "Poison", "Fairy", 
 //there's probably a more efficient way to do this but that's for Future Liza to figure out
 
 //ok so for evolution: I'm going to have a list of all of the Pokemon. When trying to evolve you first check to see if it's a Pokemon that can evolve at all, and if so, then you find the indexOf the Pokemon name in the Pokemon name list, and then go one index further.
-var pkmList = ["Pikachu", "Raichu", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Bulbasaur", "Ivysaur", "Venusaur", "Pidgey", "Pidgeotto", "Pidgeot", "Caterpie", "Metapod", "Butterfree", "Ekans", "Arbok", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Crobat", "Oddish", "Gloom", "Vileplume", "Doduo", "Dodrio", "Vulpix", "Ninetales", "Gastly", "Haunter", "Gengar", "Weedle", "Kakuna", "Beedrill", "Clefairy", "Clefable", "Meowth", "Persian", "Growlithe", "Arcanine"];
+var pkmList = [["Pikachu", "Electric"], ["Raichu", "Electric"], ["Charmander", "Fire"], ["Charmeleon", "Fire"], ["Charizard", "Fire"], ["Squirtle", "Water"], ["Wartortle", "Water"], ["Blastoise", "Water"], ["Bulbasaur", "Grass"], ["Ivysaur", "Grass"], ["Venusaur", "Grass"], ["Pidgey", "Flying"], ["Pidgeotto", "Flying"], ["Pidgeot", "Flying"], ["Caterpie", "Bug"], ["Metapod", "Bug"], ["Butterfree", "Bug"], ["Ekans", "Poison"], ["Arbok", "Poison"], ["Jigglypuff", "Fairy"], ["Wigglytuff", "Fairy"], ["Zubat", "Poison"], ["Golbat", "Poison"], ["Crobat", "Poison"], ["Oddish", "Grass"], ["Gloom", "Poison"], ["Vileplume", "Poison"], ["Doduo", "Normal"], ["Dodrio", "Normal"], ["Vulpix", "Fire"], ["Ninetales", "Fire"], ["Gastly", "Ghost"], ["Haunter", "Ghost"], ["Gengar", "Ghost"], ["Weedle", "Bug"], ["Kakuna", "Bug"], ["Beedrill", "Bug"], ["Clefairy", "Fairy"], ["Clefable", "Fairy"], ["Meowth", "Normal"], ["Persian", "Normal"], ["Growlithe", "Fire"], ["Arcanine", "Fire"], ["Magnemite", "Electric"], ["Magneton", "Electric"], ["Magnezone", "Electric"], ["Lapras", "Water"], ["Rattata", "Normal"], ["Raticate", "Normal"], ["Psyduck", "Water"], ["Golduck", "Water"], ["Mewtwo", "Psychic"], ["Bellsprout", "Grass"], ["Weepinbell", "Grass"], ["Victreebel", "Grass"], ["Tentacool", "Water"], ["Tentacruel", "Water"], ["Abra", "Psychic"], ["Kadabra", "Psychic"], ["Alakazam", "Psychic"], ["Ponyta", "Fire"], ["Rapidash", "Fire"], ["Drowzee", "Psychic"], ["Hypno", "Psychic"]];
 
-var wildPokemon = [["Pidgey", "Flying"], ["Caterpie", "Bug"], ["Ekans", "Poison"], ["Jigglypuff", "Fairy"], ["Zubat", "Flying"], ["Oddish", "Grass"], ["Doduo", "Normal"], ["Vulpix", "Fire"], ["Gastly", "Ghost"], ["Rattata", "Normal"], ["Weedle", "Bug"], ["Clefairy", "Fairy"], ["Meowth", "Normal"], ["Growlithe", "Fire"]]; //list of wild Pokemon to grab from for a random encounter
+var wildPokemon = [["Pidgey", "Flying"], ["Caterpie", "Bug"], ["Ekans", "Poison"], ["Jigglypuff", "Fairy"], ["Zubat", "Flying"], ["Oddish", "Grass"], ["Doduo", "Normal"], ["Vulpix", "Fire"], ["Gastly", "Ghost"], ["Rattata", "Normal"], ["Weedle", "Bug"], ["Clefairy", "Fairy"], ["Meowth", "Normal"], ["Growlithe", "Fire"], ["Ponyta", "Fire"]]; //list of wild Pokemon to grab from for a random encounter
 
-var trainerList = [["Kyle", "Rattata", "Normal", 5], ["Emma", "Oddish", "Grass", 10], ["Kovas", "Golduck", "Water", 20], ["Cora", "Growlithe", "Fire", 25], ["Basilio", "Magnemite", "Electric", 30], ["Isabel", "Ninetales", "Fire", 40], ["Amy", "Haunter", "Ghost", 45], ["Zoya", "Lapras", "Water", 50], ["Albinson", "Mewtwo", "Psychic", 100]]; 
+var trainerList = [["Kyle", ["Rattata", "Meowth"], 5], ["Emma", ["Oddish", "Bellsprout"], 10], ["Kovas", ["Tentacool", "Golduck"], 20], ["Cora", ["Arcanine"], 25], ["Basilio", ["Magnemite"], 30], ["Isabel", ["Rapidash", "Ninetales"], 40], ["Amy", ["Haunter", "Alakazam"], 45], ["Zoya", ["Lapras"], 50], ["Albinson", ["Mewtwo"], 100]]; 
 //possible "trainers" (lol) to fight in a battle - progression
 
+function getPokemonId(name){ //get the id of the pokemon from pkmList
+  for (var i=0; i<pkmList.length; i++){
+    if (pkmList[i][0] == name){
+      return i;
+    }
+  }
+}
+
 class Trainer {
-  constructor(name, pokemon, type, level){
+  constructor(name, pokemon, level, charImg="", charX=0, charY=0){
     this.name = name;
-    this.pokemon = new Pokemon(pokemon, type, level);
     this.defeated = false;
+    this.img = charImg;
+    this.x = charX;
+    this.y = charY;
+    this.pokemon = [];
+    for (var n=0; n<pokemon.length; n++){
+      var pkmId = getPokemonId(pokemon[n]);
+      this.pokemon.push(new Pokemon(pkmList[pkmId][0], pkmList[pkmId][1], level));
+    }
   }
 }
 
@@ -53,7 +68,6 @@ class Pokemon {
         this.knownMoves.push(typeMoves[i]);
       }
     }
-    
   }
   levelup(){
     this.level += 1;
@@ -120,7 +134,6 @@ class Pokemon {
       $("#moveSet").show();
     }
 
-    console.log(this.knownMoves);
   }
 
   removeMove(id){
@@ -143,35 +156,20 @@ class Pokemon {
   }
 
   evolve(){
-    //Basic Pokemon: Pikachu, Charmander, Squirtle, Bulbasaur, Pidgey, Caterpie, Ekans, Oddish, Doduo, Vulpix, Jigglypuff, Zubat
-    //2nd level Pokemon: Raichu, Charmeleon, Wartortle, Ivysaur, Pidgeotto, Metapod, Arbok, Gloom, Dodrio, Ninetales, Wigglytuff, Golbat
-    //3rd level: Charizard, Blastoise, Venusaur, Pigeot, Butterfree, Vileplume, Crobat
-    //2nd level unevolvable: Raichu, Arbok, Dodrio, Ninetales, Wigglytuff
-    
-    //Actually when it's already 3rd level it shouldn't try to evolve - so we just have to check for the other 5. EZ
-    if (this.name == "Raichu" || this.name == "Arbok" || this.name == "Dodrio" || this.name == "Ninetales" || this.name == "Wigglytuff" || this.name == "Clefable"){
+    if (this.name == "Raichu" || this.name == "Arbok" || this.name == "Dodrio" || this.name == "Ninetales" || this.name == "Wigglytuff" || this.name == "Clefable" || this.name == "Lapras" || this.name == "Raticate" || this.name == "Golduck"){
       console.log("Evolution failed");
       //fucking don't do anything I guess
     }
     else {
-      var newNameIndex = pkmList.indexOf(this.name) + 1;
-      this.name = pkmList[newNameIndex];
+      var newNameIndex = getPokemonId(this.name) + 1;
+      this.name = pkmList[newNameIndex][0];
+      this.type = pkmList[newNameIndex][1];
       $("#0 .species").text(this.name);
       $("#0 img").attr("src", "images/"+this.name+".png");
       $("#starterImage").attr("src", "images/"+this.name+".png");
       text("Congratulations! Your " + this.nickname + " evolved into a " + this.name + "!", x, y);
       y += 15;
     }
-  }
-}
-
-class Character {
-  constructor(id, name, charX, charY, charImg){
-    this.id = id;
-    this.name = name;
-    this.img = charImg;
-    this.x = charX;
-    this.y = charY;
   }
 }
 
