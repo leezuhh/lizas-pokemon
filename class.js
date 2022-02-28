@@ -14,10 +14,6 @@ class Trainer {
     this.x = charX;
     this.y = charY;
     this.pokemon = pokemon;
-    // for (var n=0; n<pokemon.length; n++){
-    //   var pkmId = getPokemonId(pokemon[n]);
-    //   this.pokemon.push(new Pokemon(pkmList[pkmId][0], pkmList[pkmId][1], level));
-    // }
   }
 }
 

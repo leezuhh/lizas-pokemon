@@ -19,17 +19,20 @@ var pkmList = [["Pikachu", "Electric"], ["Raichu", "Electric"], ["Charmander", "
 
 var wildPokemon = [["Pidgey", "Flying"], ["Caterpie", "Bug"], ["Ekans", "Poison"], ["Jigglypuff", "Fairy"], ["Zubat", "Flying"], ["Oddish", "Grass"], ["Doduo", "Normal"], ["Vulpix", "Fire"], ["Gastly", "Ghost"], ["Rattata", "Normal"], ["Weedle", "Bug"], ["Clefairy", "Fairy"], ["Meowth", "Normal"], ["Growlithe", "Fire"], ["Ponyta", "Fire"]]; //list of wild Pokemon to grab from for a random encounter
 
-var trainerList = []; //array of objects?
+//I might make a class for attacks with name, type, set damage, and accuracy. Is that too much, should I just make an array of non-class objects?
+//God I miss SQL
 
-trainerList.push(new Trainer("Kyle", [new Pokemon("Rattata", "Normal", 5, 0, "Rattata", 500, ["Quick Attack", "Tackle"])]));
-// trainerList.push(new Trainer("Emma", ["Oddish", "Bellsprout"], 10));
-// trainerList.push(new Trainer("Kovas", ["Tentacool", "Golduck"], 20));
-// trainerList.push(new Trainer("Cora", ["Arcanine"], 25));
-// trainerList.push(new Trainer("Basilio", ["Magnemite"], 30));
-// trainerList.push(new Trainer("Isabel", ["Rapidash", "Ninetales"], 40));
-// trainerList.push(new Trainer("Amy", ["Haunter", "Alakazam"], 45));
-// trainerList.push(new Trainer("Zoya", ["Lapras"], 50));
-// trainerList.push(new Trainer("Albinson", ["Mewtwo"], 100));
+var trainerList = []; //array of objects
+
+trainerList.push(new Trainer("Kyle", [new Pokemon("Rattata", "Normal", 5, 0, "Rattata", 500, ["Quick Attack", "Tackle"]), new Pokemon("Meowth", "Normal", 4, 0, "Meowth", 450, ["Tackle", "Scratch"])]));
+trainerList.push(new Trainer("Emma", [new Pokemon("Oddish", "Grass", 12, 0, "Turnip", 1150, ["Growth", "Acid"]), new Pokemon("Bellsprout", "Grass", 11, 0, "Bellsprout", 1100, ["Vine Whip", "Wrap", "Acid"])])); //oddish, bellsprout
+trainerList.push(new Trainer("Kovas", [new Pokemon("Tentacool", "Water", 20, 0, "Kraken", 2100, ["Water Gun", "Poison Sting", "Water Pulse"]), new Pokemon("Golduck", "Water", 23, 0, "Golduck", 2250, ["Aqua Jet", "Scratch", "Water Gun", "Aqua Tail"])])); //tentacool, golduck
+trainerList.push(new Trainer("Cora", [new Pokemon("Arcanine", "Fire", 27, 0, "Fido", 2700, ["Bite", "Ember", "Fire Fang", "Flare Blitz"])])); //arcanine
+trainerList.push(new Trainer("Basilio", [new Pokemon("Magnemite", 28, 0, "Magnemite", 2900, ["Thunder Shock", "Spark"]), new Pokemon("Magneton", "Electric", 33, 0, "Magneton", 3200, ["Thunder Shock", "Spark", "Flash Cannom"])])); //magneton, magnemite
+trainerList.push(new Trainer("Isabel", [new Pokemon("Rapidash", "Fire", 40, 0, "Rapidash", 4000, ["Quick Attack", "Flame Charge", "Flare Blitz"]), new Pokemon("Ninetales", "Fire", 43, 0, "Ninetales", 4200, ["Ember"])], 40)); //rapidash, ninetales (UNFINISHED)
+// trainerList.push(new Trainer("Amy", ["Haunter", "Alakazam"], 45)); //haunter, alakazam
+// trainerList.push(new Trainer("Zoya", ["Lapras"], 50)); //lapras
+// trainerList.push(new Trainer("Albinson", ["Mewtwo"], 100)); //mewtwo
 
 for (var trainer of trainerList){
   console.log(trainer.pokemon);

@@ -750,6 +750,10 @@ List of things to add:
 - Wild Pokemon evolve
 - Wild Pokemon are within a range of levels and not just Your Level
 - Show numerical health with health bar
+- Pokedex
+- Add stats - atk., def., sp. def, sp. atk.
+- Clean up code (current)
+- Change progression - different areas w/ different strength Pokemon, each area has a different trainer
 
 Izzy Glitches:
 - When leveling up, new attack buttons keep getting added for all Pokemon
