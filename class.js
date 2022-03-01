@@ -168,3 +168,180 @@ class Tile{
     }
   }
 }
+
+class Attack{
+  constructor(name, type, damage, accuracy){
+    this.name = name;
+    this.type = type;
+    this.damage = damage;
+    this.accuracy = accuracy;
+  }
+  hit(){
+    //rolls to see if attack hits. returns true (hit) or false (miss)
+    var chance = Math.floor(Math.random()*100);
+    if (chance < this.accuracy){
+      return true;
+    }
+    return false;
+  }
+  doDamage(enemyType){
+    //tests against type to see how much damage is done
+    var damageDealt = this.damage; //easier to do dual types later if i get to it?
+    switch (enemyType){
+      case "Normal":
+        if (this.type == "Fighting"){
+          damageDealt*2;
+        }
+        else if (this.type == "Ghost"){
+          return 0;
+        }
+        break;
+      case "Fire":
+        if (this.type == "Water" || this.type == "Ground" || this.type == "Rock"){
+          damageDealt*2;
+        }
+        if (this.type == "Fire" || this.type == "Grass" || this.type == "Ice" || this.type == "Bug" || this.type == "Steel" || this.type == "Fairy"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Water":
+        if (this.type == "Grass" || this.type = "Electric"){
+          damageDealt * 2;
+        }
+        if (this.type == "Fire" || this.type == "Water" || this.type == "Ice" || this.type == "Steel"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Grass":
+        if (this.type == "Fire" || this.type == "Ice" || this.type == "Poison" || this.type == "Flying" || this.type == "Bug"){
+          damageDealt * 2;
+        }
+        if (this.type == "Water" || this.type == "Grass" || this.type == "Electric" || this.type == "Ground"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Electric":
+        if (this.type == "Ground"){
+          damageDealt * 2;
+        }
+        if (this.type == "Electric" || this.type == "Flying" || this.type == "Steel"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Ice":
+        if (this.type == "Fire" || this.type == "Fighting" || this.type == "Rock" || this.type == "Steel"){
+          damageDealt * 2;
+        }
+        if (this.type == "Ice"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Fighting":
+        if (this.type == "Flying" || this.type == "Psychic" || this.type == "Fairy"){
+          damageDealt * 2;
+        }
+        if (this.type == "Bug" || this.type == "Rock" || this.type == "Dark"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Poison":
+        if (this.type == "Ground" || this.type == "Psychic"){
+          damageDealt * 2;
+        }
+        if (this.type == "Grass" || this.type == "Fighting" || this.type == "Poison" || this.type == "Bug" || this.type == "Fairy"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Ground":
+        if (this.type == "Water" || this.type == "Grass" || this.type == "Ice"){
+          damageDealt * 2;
+        }
+        if (this.type == "Poison" || this.type == "Rock"){
+          damageDealt * 0.5;
+        }
+        if (this.type == "Electric"){
+          damageDealt * 0;
+        }
+        break;
+      case "Flying":
+        if (this.type == "Electric" || this.type == "Ice" || this.type == "Rock"){
+          damageDealt * 2;
+        }
+        if (this.type == "Grass" || this.type == "Fighting" || this.type == "Bug"){
+          damageDealt * 0.5;
+        }
+        if (this.type == "Ground"){
+          damageDealt * 0;
+        }
+        break;
+      case "Psychic":
+        if (this.type == "Bug" || this.type == "Ghost" || this.type == "Dark"){
+          damageDealt * 2;
+        }
+        if (this.type == "Grass" || this.type == "Fighting" || this.type == "Ground"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Bug":
+        if (this.type == "Fire" || this.type == "Flying" || this.type == "Rock"){
+          damageDealt * 2;
+        }
+        if (this.type == "Grass" || this.type == "Fighting" || this.type == "Ground"){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Rock":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Ghost":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        if (this.type == "Normal" || this.type == "Fighting"){
+          damageDealt * 0;
+        }
+        break;
+      case "Dragon":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Dark":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Steel":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        break;
+      case "Fairy":
+        if (){
+          damageDealt * 2;
+        }
+        if (){
+          damageDealt * 0.5;
+        }
+        break;
+    }
+    return damageDealt;
+  }
+}
