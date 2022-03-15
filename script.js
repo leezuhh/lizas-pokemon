@@ -5,7 +5,6 @@
 var x = 10;
 var y = 15;
 var myCanvas;
-var starterList = [["Pikachu", "Electric"], ["Bulbasaur", "Grass"], ["Charmander", "Fire"], ["Squirtle", "Water"]];
 var starter; //because I don't want to go and change everything, "starter" is just whatever Pokemon is "equipped"
 var playerPokemon = []; //all total pokemon
 var currentTrainer = null;
@@ -24,7 +23,7 @@ var user;
 var ind1;
 
 //map variables
-var player = new Trainer("Player", [], 0, "char1.png", 12.5, 12.5);
+var player = new Trainer("Player", [], "char1.png", 12.5, 12.5);
 var playerImg;
 var tiles = [];
 
@@ -52,25 +51,44 @@ function setup() {
   $("canvas").hide();
 }
 
+
 function levelUp(){
   starter.levelup();
 }
+
+
 function blergh(){
   enemiesDefeated.push(["This is a tester enemy"]);
   console.log(enemiesDefeated);
 }
 
+
 function selectStarter(ind) {
   //name and type are from starterList, level 1
-  starter = new Pokemon(starterList[ind][0], starterList[ind][1], 1);
+  starter = starterList[ind];
+  // console.log(starter);
   $("#selector").hide();
   $("canvas, #inventory").show();
   addToTeam(starter);
-  document.getElementById("starterImage").src = "images/" + starter.name + ".png";
-  document.getElementById("move1").innerHTML = starter.knownMoves[0];
-  document.getElementById("move2").innerHTML = starter.knownMoves[1];
-  startTrainerBattle("Isabel", ["Vulpix"], 1); //starting trainer battle always the same
+  $("#starterImage").attr("src", "images/"+starter.name+".png");
+  $("#move1").text(starter.knownMoves[0].name);
+  $("#move2").text(starter.knownMoves[1].name);
+  if (starter.knownMoves[2] != null){
+    $("#move3").text(starter.knownMoves[2].name);
+  }
+  else {
+    $("#move3").text("-----");
+  }
+  if (starter.knownMoves[3] != null){
+    $("#move4").text(starter.knownMoves[3].name);
+  }
+  else {
+    $("#move4").text("-----");
+  }
+  var izzy = new Trainer("Isabel", [new Pokemon("Vulpix", "Fire", 3, fireMoves, 0, "Vulpix", 300, ["Scratch", "Tackle"])]);
+  startTrainerBattle(izzy);
 }
+
 
 function walk() {
   clear();
@@ -118,75 +136,97 @@ function walk() {
   }
 }
 
-//begin a trainer battle
-//we take: trainer name, pokemon name, pokemon type, pokemon level
-function startTrainerBattle(trainer, pokemon, level){
-  //pokemon is an ARRAY now
+
+
+//*BATTLE FUNCTIONS*\\
+
+//start trainer battle
+function startTrainerBattle(trainer){
   clearMap();
   clear();
   y = 15;
-  currentTrainer = new Trainer(trainer, pokemon, level);
-  $("#trainerImage").show();
-  $("#trainerImage").attr("src", "images/"+trainer+".png");
-  enemyPokemon = currentTrainer.pokemon[0];
-  text("Trainer "+trainer+" challenged you to a battle!", x, y);
+
+  //generate: trainer, enemyPokemon
+  currentTrainer = trainer; //object
+  enemyPokemon = currentTrainer.pokemon[0]; //object
+
+  //text
+  text("Trainer "+trainer.name+" challenged you to a battle!", x, y);
   y += 15;
-  text("Trainer "+trainer+" sent out " +pokemon[0]+"!", x, y);
+  text("Trainer "+trainer.name+" sent out " +enemyPokemon.name+"!", x, y);
   y += 15;
   attackText();
   
-  //shop goes poof
+  //what to show and hide
   $("#shop, #capture, #run").hide();
-
-  //what shows up: moves, enemy pokemon image, hp bars
-  $("#pokemonInfo").show();
-  document.getElementById("enemyImage").src = "images/" + pokemon[0] + ".png";
+  $("#pokemonInfo, #trainerImage").show();
+  $("#trainerImage").attr("src", "images/"+trainer.name+".png");
+  $("#enemyImage").attr("src", "images/"+enemyPokemon.name+".png");
 }
 
+
+//start wild pokemon battle
 function wildEncounter(pokemon, type, lvl){
   clearMap();
   clear();
-  $("#run").show();
-  $("#trainerImage").hide(); //because my code hates me
+
+  //generate pokemon
   enemyPokemon = new Pokemon(pokemon, type, lvl);
-  document.getElementById("enemyp").style.width = "100px";
+  $("#enemyp").width(100);
   multiplier = 100/starter.maxHP;
-  document.getElementById("starterp").style.width = starter.hp*multiplier + "px";
+  $("#starterp").width(starter.hp*multiplier)
+  
+  //text
   text("You encountered a wild Level "+lvl+" "+pokemon+"!", x, y);
   y += 15;
   text("Go, " + starter.nickname + "!", x, y);
   y += 15;
   attackText();
+
+  //figure out what to show & hide
   if (pokeballs > 0) {
     $("#capture").show();
   }
   if (potions > 0) {
     $("#potion").show();
   }
-  $("#pokemonInfo").show();
-  document.getElementById("enemyImage").src = "images/" + pokemon + ".png";
+  $("#pokemonInfo, #run").show();
+  $("#trainerImage").hide(); //because my code hates me
+  $("#enemyImage").attr("src", "images/"+pokemon+".png");
 }
+
 
 //for a PLAYER POKEMON, attacks
 function useMove(id){
   var moves = starter.knownMoves;
-  var move = moves[id];
-  var damage = starter.baseDamage + id*5;
-  moveText(starter.name, move, damage);
-  dealDamage(damage, "enemy");
+  var move = moves[id]; //this should be an OBJECT
+  var success = move.hit(); //true or false
+  if (success){
+    var originalDamage = move.damage;
+    var damage = move.doDamage(enemyPokemon);
+    moveText(starter.name, move, originalDamage, damage);
+    dealDamage(damage, "enemy");
+  }
+  else {
+    text("Your attack missed!", x, y);
+    y += 15;
+  }
   attack(enemyPokemon);
 }
+
 
 //for a NON-PLAYER pokemon, decides which move they will use
 function attack(pokemon){
   var moves = pokemon.knownMoves;
   var chance = Math.floor(Math.random()*moves.length);
-  var move = moves[chance];
-  var damage = pokemon.baseDamage + chance*5;
-  moveText(pokemon.name, move, damage);
-  attackText();
+  var move = moves[chance]; //picks a random move; OBJECT
+  var originalDamage = move.damage;
+  var damage = move.doDamage(starter);
+  moveText(pokemon.name, move, originalDamage, damage);
   dealDamage(damage, "player");
+  attackText();
 }
+
 
 //literally just says "What will you do?" because I'm lazy!
 function attackText(){
@@ -194,10 +234,20 @@ function attackText(){
   y += 15;
 }
 
-function moveText(name, move, damage) {
-  text(name + " used " + move + "! It did " + damage + " damage!", x, y);
+
+function moveText(name, move, ogdamage, damage) {
+  text(name + " used " + move.name + "!", x, y);
   y += 15;
+  if (damage < ogdamage){
+    text("It wasn't very effective...", x, y);
+    y += 15;
+  }
+  else if (damage > ogdamage){
+    text("It was super effective!", x, y);
+    y += 15;
+  }
 }
+
 
 function capture(){
   y = 15;
@@ -228,8 +278,8 @@ function capture(){
         text("You are out of Pokeballs!", x, y);
         y += 15;
         $("#capture").hide();
-        attackText();
         attack(enemyPokemon);
+        attackText();
       }
     }
   }
@@ -239,15 +289,19 @@ function capture(){
   }
 }
 
-//deal damage - "receiver" will either be the starter pokemon or the enemy pokemon. Only effects HP
+
+//deal damage - "receiver" will either be the starter pokemon or the enemy pokemon. Only affects HP
 function dealDamage(damage, receiver){
   var multiplier;
+
+  //if: player damages enemy
   if (receiver == "enemy"){
     multiplier = 100/enemyPokemon.maxHP; //like ex: 100/200 = 1/2
     enemyPokemon.hp -= damage;
-    document.getElementById("enemyp").style.width = enemyPokemon.hp*multiplier + "px";
+    $("#enemyp").width(enemyPokemon.hp*multiplier);
     if (enemyPokemon.hp <= 0){
-      document.getElementById("enemyp").style.width = "0px";
+      $("#enemyp").width(0);
+
       //check if they have any more Pokemon
       var allDefeated = true;
       if (currentTrainer != null){
@@ -259,9 +313,10 @@ function dealDamage(damage, receiver){
             enemyPokemon = currentTrainer.pokemon[i];
             //change hp bar and image
             multiplier = 100/enemyPokemon.maxHP;
-            document.getElementById("enemyp").style.width = enemyPokemon.hp*multiplier + "px";
+            $("#enemyp").width(enemyPokemon.hp*multiplier);
             $("#enemyImage").attr("src", "images/" + enemyPokemon.name + ".png");
-  
+
+            //text
             clear();
             y = 15;
             text("Trainer " + currentTrainer.name + "'s Pokemon fainted!", x, y);
@@ -278,27 +333,19 @@ function dealDamage(damage, receiver){
     }
   }
 
+  //enemy damaging player
   else if (receiver == "player"){
     multiplier = 100/starter.maxHP;
     starter.hp -= damage;
-    document.getElementById("starterp").style.width = starter.hp*multiplier + "px";
+    $("#starterp").width(starter.hp*multiplier);
     if (starter.hp <= 0){
       starter.hp = 0;
-      document.getElementById("starterp").style.width = "0px";
+      $("#starterp").width(0);
       lose();
     }
   }
 }
 
-function heal(){
-  for (var i=0; i<playerPokemon.length; i++){
-    playerPokemon[i].hp = playerPokemon[i].maxHP;
-  }
-  text("Pokemon healed. Thank you for visiting the Pokemart!", x, y);
-  y += 15;
-  //and then fill the hp bar for next battle
-  document.getElementById("starterp").style.width = "100px";
-}
 
 function usePotion(){
   if (potions > 0){
@@ -313,7 +360,7 @@ function usePotion(){
       starter.hp = starter.maxHP;
     }
     multiplier = 100/starter.maxHP;
-    document.getElementById("starterp").style.width = starter.hp*multiplier + "px";
+    $("#starterp").width(starter.hp*multiplier);
   }
   else {
     text("You have no potions!", x, y);
@@ -321,6 +368,7 @@ function usePotion(){
   }
   
 }
+
 
 function win(){
   clear();
@@ -362,6 +410,7 @@ function win(){
   enemyPokemon = null;
 }
 
+
 function lose(){
   var allDefeated = true; //assume all are fainted unless you see otherwise
   var liveInd;
@@ -391,9 +440,33 @@ function lose(){
   }
 }
 
+
 function reset(){
   location.reload();
 }
+
+
+function run(){
+  var chance = Math.random()*10;
+  if (chance >= 5){
+    //escape successfully
+    clear();
+    y = 15;
+    allowMap();
+    text("You ran away.", x, y);
+    y += 15;
+    enemyPokemon = null;
+    $("#pokemonInfo").hide();
+  }
+  else {
+    text("You tried to run, but couldn't.", x, y);
+    y += 15;
+  }
+}
+
+
+
+//ONTO: SHOP FUNCTIONS\\
 
 function buy(id){
   //id will signify what item is purchased
@@ -428,6 +501,18 @@ function buy(id){
   document.getElementById("goldCount").innerHTML = pokecoins;
 }
 
+
+function heal(){
+  for (var i=0; i<playerPokemon.length; i++){
+    playerPokemon[i].hp = playerPokemon[i].maxHP;
+  }
+  text("Pokemon healed. Thank you for visiting the Pokemart!", x, y);
+  y += 15;
+  //and then fill the hp bar for next battle
+  document.getElementById("starterp").style.width = "100px";
+}
+
+
 function shop(){ //just shows the shop
   clearMap();
   clear();
@@ -439,6 +524,11 @@ function shop(){ //just shows the shop
   player.y += 25;
   findCurrentTile(player.x, player.y);
 }
+
+
+
+
+//ONTO: SAVING STUFF\\
 
 function loadGame(){
   clearMap();
@@ -492,6 +582,7 @@ function loadGame(){
 
 }
 
+
 function newGame(){
   //note: localStorage only saves strings because it hates happiness
   //all arrays will need to be converted to and from strings with names separated with commas
@@ -518,8 +609,8 @@ function newGame(){
     $("#menu").hide();
     $("#opener").show();
   }
-
 }
+
 
 function saveGame(){
   //can only be done at a pokemart
@@ -528,6 +619,11 @@ function saveGame(){
     plpkm = plpkm + "!!" + JSON.stringify(playerPokemon[i]);
   }
   localStorage.setItem(user+"pkm", plpkm);
+
+  //same thing but for moves
+
+  var move1 = JSON.stringify(playerPokemon[0].knownMoves);
+  console.log(move1);
 
   //now do the same for enemiesDefeated
 
@@ -547,6 +643,7 @@ function saveGame(){
   y += 15;
 }
 
+
 function objectToPokemon(objToBeConv){ //since local storage is a little bitch
   var pkmName = objToBeConv.name;
   var pkmType = objToBeConv.type;
@@ -554,19 +651,16 @@ function objectToPokemon(objToBeConv){ //since local storage is a little bitch
   var pkmExp = objToBeConv.exp;
   var pkmNName = objToBeConv.nickname;
   var pkmHP = objToBeConv.hp;
+  var pkmKM = objToBeConv.knownMoves;
+  var pkmPM = objToBeConv.possibleMoves;
   
-  var creation = new Pokemon(pkmName, pkmType, pkmLevel, pkmExp, pkmNName, pkmHP);
+  var creation = new Pokemon(pkmName, pkmType, pkmLevel, pkmPM, pkmKM);
   return creation;
 }
 
-function clearText(){
-  if (y >= myCanvas.height){
-    clear();
-    y = 15;
-    text("What will you do?", x, y);
-    y += 15;
-  }
-}
+
+
+//MANAGING FOOTER\\
 
 function addToTeam(pkmn){
   //adds a Pokemon to the management bar at the bottom
@@ -589,10 +683,12 @@ function addToTeam(pkmn){
   }
 }
 
+
 function openNN(pkmInd){
   $("#changeNN").show();
   $("#inder").text(pkmInd);
 }
+
 
 function changeNN(){
   var ind = $("#inder").text();
@@ -603,6 +699,7 @@ function changeNN(){
   pkmn.nickname = newName;
   $("#changer").val("")
 }
+
 
 function startSwitch(ind){
   if (playerPokemon[ind].hp > 0){
@@ -621,6 +718,7 @@ function startSwitch(ind){
   }
 }
 
+
 function switchPokemon(ind){
   if (playerPokemon[ind].hp > 0){
     //ind = index of party member that's switching
@@ -637,7 +735,7 @@ function switchPokemon(ind){
     text("Switch successful!", x, y)
     y += 15;
 
-    console.log(starter.knownMoves);
+    // console.log(starter.knownMoves);
     for (var i=0; i<starter.knownMoves; i++){
       $("#move"+i).text(starter.knownMoves[i]);
       var btba = "<button id='move"+i+"' onclick='useMove("+i+")' class='btn'>"+starter.knownMoves[i]+"</button>";
@@ -702,16 +800,28 @@ function checkProgression(){
   }
 }
 
+//MISC\\
+
+function clearText(){
+  if (y >= myCanvas.height){
+    clear();
+    y = 15;
+    text("What will you do?", x, y);
+    y += 15;
+  }
+}
+
+
 function clearMap(){
   //gets rid of the map
   mapAllowed = false;
   fill(255);
   noStroke();
-  square(150, 150);
   stroke(0);
   fill(0);
   x = 10;
 }
+
 
 function allowMap(){
   mapAllowed = true;
@@ -719,28 +829,15 @@ function allowMap(){
   draw();
 }
 
+
 function startGame(){
   $("#opener").hide();
   $("#selector").show();
 }
 
-function run(){
-  var chance = Math.random()*10;
-  if (chance >= 5){
-    //escape successfully
-    clear();
-    y = 15;
-    allowMap();
-    text("You ran away.", x, y);
-    y += 15;
-    enemyPokemon = null;
-    $("#pokemonInfo").hide();
-  }
-  else {
-    text("You tried to run, but couldn't.", x, y);
-    y += 15;
-  }
-}
+
+
+
 
 /*
 
@@ -754,6 +851,8 @@ List of things to add:
 - Add stats - atk., def., sp. def, sp. atk.
 - Clean up code (current)
 - Change progression - different areas w/ different strength Pokemon, each area has a different trainer
+- Moves: multi-hit attacks, draining attacks
+- Dual-type Pokemon
 
 Izzy Glitches:
 - When leveling up, new attack buttons keep getting added for all Pokemon
